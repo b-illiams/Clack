@@ -1,0 +1,2 @@
+public class TestClackData {
+}
