@@ -74,8 +74,10 @@ public class ClackClient {
         int result = 1;
         result = prime * result + (userName.hashCode());
         result = prime * result + (hostName.hashCode());
-        /*result = prime * result + (dataToSendToServer.hashCode());
-        result = prime * result + (dataToReceiveFromServer.hashCode());*/
+        if(dataToSendToServer != null)
+            result = prime * result + (dataToSendToServer.hashCode());
+        if(dataToReceiveFromServer != null)
+            result = prime * result + (dataToReceiveFromServer.hashCode());
         result = prime * result + (port);
         result = prime * result + (closeConnection ? 1 : 0);
         return result;
@@ -89,9 +91,27 @@ public class ClackClient {
             return false;
         }else{
             ClackClient o = (ClackClient) obj;
+            boolean b1 = false;
+            boolean b2 = false;
 
-            return /*this.dataToSendToServer.equals(o.dataToSendToServer) &&
-                    this.dataToReceiveFromServer.equals(o.dataToReceiveFromServer) &&*/
+            if(dataToReceiveFromServer != null && o.dataToSendToServer != null){
+                if(this.dataToReceiveFromServer.equals(o.dataToReceiveFromServer) ){
+                    b1 = true;
+                }
+            }else if(dataToReceiveFromServer == null && o.dataToReceiveFromServer == null){
+                b1 = true;
+            }
+
+            if(dataToSendToServer != null && o.dataToSendToServer != null){
+                if(this.dataToSendToServer.equals(o.dataToSendToServer)){
+                    b2 = true;
+                }
+            } else if(dataToSendToServer == null && o.dataToSendToServer == null){
+                b2 = true;
+            }
+
+            return b1 &&
+                    b2 &&
                     this.userName.equals(o.userName) &&
                     this.hostName.equals(o.hostName) &&
                     this.port == o.port &&

@@ -2,6 +2,7 @@ package main;
 
 import test.TestClackClient;
 import test.TestClackData;
+import test.TestClackServer;
 
 public class Main {
 
@@ -9,5 +10,6 @@ public class Main {
         System.out.println("Hello world");
         TestClackData.main();
         TestClackClient.main();
+        TestClackServer.main();
     }
 }
