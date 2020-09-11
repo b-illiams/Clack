@@ -74,8 +74,8 @@ public class ClackClient {
         int result = 1;
         result = prime * result + (userName.hashCode());
         result = prime * result + (hostName.hashCode());
-        result = prime * result + (dataToSendToServer.hashCode());
-        result = prime * result + (dataToReceiveFromServer.hashCode());
+        /*result = prime * result + (dataToSendToServer.hashCode());
+        result = prime * result + (dataToReceiveFromServer.hashCode());*/
         result = prime * result + (port);
         result = prime * result + (closeConnection ? 1 : 0);
         return result;
@@ -90,8 +90,10 @@ public class ClackClient {
         }else{
             ClackClient o = (ClackClient) obj;
 
-            return this.dataToSendToServer.equals(o.dataToSendToServer) &&
-                    this.dataToReceiveFromServer.equals(o.dataToReceiveFromServer) &&
+            return /*this.dataToSendToServer.equals(o.dataToSendToServer) &&
+                    this.dataToReceiveFromServer.equals(o.dataToReceiveFromServer) &&*/
+                    this.userName.equals(o.userName) &&
+                    this.hostName.equals(o.hostName) &&
                     this.port == o.port &&
                     this.closeConnection == o.closeConnection;
         }

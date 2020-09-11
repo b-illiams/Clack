@@ -11,9 +11,9 @@ public class TestClackClient {
         System.out.println(clackClient.getUserName());
         System.out.println(clackClient.getHostName());
         System.out.println(clackClient.getPort());
-        //System.out.println(clackClient.hashCode());
-        //System.out.println(clackClient.equals(cc1));
-        //System.out.println(clackClient.equals(cc2));
+        System.out.println(clackClient.hashCode());
+        System.out.println(clackClient.equals(cc1));
+        System.out.println(clackClient.equals(cc2));
         System.out.println(clackClient.toString());
 
 

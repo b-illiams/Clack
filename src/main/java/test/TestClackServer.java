@@ -9,9 +9,9 @@ public class TestClackServer {
         ClackServer cs2 = new ClackServer(7080);
 
         System.out.println(clackServer.getPort());
-        //System.out.println(clackServer.hashCode());
-        //System.out.println(clackServer.equals(cs1));
-        //System.out.println(clackServer.equals(cs2));
+        System.out.println(clackServer.hashCode());
+        System.out.println(clackServer.equals(cs1));
+        System.out.println(clackServer.equals(cs2));
         System.out.println(clackServer.toString());
     }
 }

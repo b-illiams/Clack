@@ -24,8 +24,8 @@ public class ClackServer {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + (dataToSendToClient.hashCode());
-        result = prime * result + (dataToReceiveFromClient.hashCode());
+        /*result = prime * result + (dataToSendToClient.hashCode());
+        result = prime * result + (dataToReceiveFromClient.hashCode());*/
         result = prime * result + (port);
         result = prime * result + (closeConnection ? 1 : 0);
         return result;
@@ -39,7 +39,6 @@ public class ClackServer {
             return false;
         }else{
             ClackServer o = (ClackServer) obj;
-
             return this.dataToSendToClient.equals(o.dataToSendToClient) &&
                     this.dataToReceiveFromClient.equals(o.dataToReceiveFromClient) &&
                     this.port == o.port &&
