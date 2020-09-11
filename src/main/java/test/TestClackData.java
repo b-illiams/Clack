@@ -5,24 +5,32 @@ import data.FileCData;
 import data.MessageClackData;
 
 public class TestClackData {
-    public static void main (String[]args){
-        ClackData messageClackData = new MessageClackData();
-        ClackData fileClackData = new FileCData();
+    public static void main(){
+        ClackData messageClackData = new MessageClackData("bbno$", "hello", 0);
+        ClackData m1 = messageClackData;
+        ClackData m2 = new MessageClackData("bbno$", "ello", 0);
+        ClackData fileClackData = new FileCData("bbno$", "bb.txt", 0);
+        ClackData f1 = fileClackData;
+        ClackData f2 = new FileCData("bbno$", "b.txt", 0);
 
-        messageClackData.getData();
-        messageClackData.getDate();
-        messageClackData.getType();
-        messageClackData.getUserName();
-        messageClackData.hashCode();
-        messageClackData.toString();
-        messageClackData.equals(fileClackData);
+        System.out.println(messageClackData.getData());
+        System.out.println(messageClackData.getDate());
+        System.out.println(messageClackData.getType());
+        System.out.println(messageClackData.getUserName());
+        System.out.println(messageClackData.hashCode());
+        System.out.println(messageClackData.toString());
+        System.out.println(messageClackData.equals(fileClackData));
+        System.out.println(messageClackData.equals(m1));
+        System.out.println(messageClackData.equals(m2));
 
-        fileClackData.getData();
-        fileClackData.getDate();
-        fileClackData.getType();
-        fileClackData.getUserName();
-        fileClackData.hashCode();
-        fileClackData.toString();
-        fileClackData.equals(messageClackData);
+        System.out.println(fileClackData.getData());
+        System.out.println(fileClackData.getDate());
+        System.out.println(fileClackData.getType());
+        System.out.println(fileClackData.getUserName());
+        System.out.println(fileClackData.hashCode());
+        System.out.println(fileClackData.toString());
+        System.out.println(fileClackData.equals(messageClackData));
+        System.out.println(fileClackData.equals(f1));
+        System.out.println(fileClackData.equals(f2));
     }
 }

@@ -39,16 +39,33 @@ public class FileCData extends ClackData {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int prime = 31;
+        int result = 1;
+        result = prime * result + ((super.getUserName() == null) ? 0 : super.getUserName().hashCode());
+        result = prime * result + (super.getType());
+        result = prime * result + ((this.getData() == null) ? 0 : this.getData().hashCode());
+        result = prime * result + ((this.getFileName() == null) ? 0 : this.getFileName().hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if(this == obj){
+            return true;
+        }else if (obj == null || obj.getClass() != this.getClass()){
+            return false;
+        }else{
+            FileCData o = (FileCData) obj;
+
+            return super.getType() == o.getType() &&
+                    super.getUserName().equals(o.getUserName()) &&
+                    this.getData() == o.getData() &&
+                    this.getFileName().equals(o.getFileName());
+        }
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        return "USERNAME: " +  super.getUserName()  + "\nTYPE: " + super.getType() + "\nDATE: " + super.getDate() + "\nFILE NAME: " + this.getFileName() + "\nFILE DATA:" + this.getData();
     }
 }
