@@ -2,6 +2,12 @@ package test;
 
 import main.ClackClient;
 
+/** Represents the test file for ClackClient.
+ * @author Brian Williams
+ * @author Shamashad Abdulla
+ * @version 1.0
+ * @since 1.0
+ */
 public class TestClackClient {
     public static void main (){
         ClackClient clackClient = new ClackClient("bb", "nomoney", 7080);

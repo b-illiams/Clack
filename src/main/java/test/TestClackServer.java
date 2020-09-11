@@ -2,6 +2,12 @@ package test;
 
 import main.ClackServer;
 
+/** Represents the test file for ClackServer.
+ * @author Brian Williams
+ * @author Shamashad Abdulla
+ * @version 1.0
+ * @since 1.0
+ */
 public class TestClackServer {
     public static void main (){
         ClackServer clackServer = new ClackServer(7080);

@@ -1,25 +1,79 @@
 package main;
 
+/** Represents a server for the messaging system of Clack.
+ * @author Brian Williams
+ * @author Shamashad Abdulla
+ * @version 1.0
+ * @since 1.0
+ */
 public class ClackServer {
+    /**
+     * Integer representing the port.
+     */
     private int port;
+    /**
+     * boolean representing the connection status.
+     */
     private boolean closeConnection;
+    /**
+     * ClackData representing data sent to client.
+     */
     private data.ClackData dataToSendToClient;
+    /**
+     * ClackData representing data sent from client.
+     */
     private data.ClackData dataToReceiveFromClient;
 
+    /**
+     * Constructor that takes in the port.
+     * @param port Integer representing the port.
+     */
     public ClackServer(int port){
         this.port =  port;
     }
 
+    /**
+     * Default Constructor that sets port to a default value.
+     */
     public ClackServer(){
         this.port = 7000;
     }
 
+    /**
+     * TODO: implementation
+     */
     public void start(){}
-    public void sendData(){ }
-    public void receiveData(){ }
+
+    /**
+     * sends data to the client
+     * TODO: implementation
+     */
+    public void sendData(){}
+
+    /**
+     * receives data from the client
+     * TODO: implementation
+     */
+    public void receiveData(){}
+
+    /**
+     * prints data
+     * TODO: implementation
+     */
+    public void printData(){}
+
+
+    /**
+     * @return value of port.
+     */
     public int getPort() {
         return port;
     }
+
+    /**
+     *
+     * @return hash value of class.
+     */
     @Override
     public int hashCode() {
         int prime = 31;
@@ -33,6 +87,11 @@ public class ClackServer {
         return result;
     }
 
+    /**
+     *
+     * @param obj Clack Server object
+     * @return comparison of the values of two Clack Server objects.
+     */
     @Override
     public boolean equals(Object obj) {
         if(this == obj){
@@ -66,7 +125,10 @@ public class ClackServer {
                     this.closeConnection == o.closeConnection;
         }
     }
-
+    /**
+     *
+     * @return String representation of ClackServer
+     */
     @Override
     public String toString() {
         return "\nDATA TO CLIENT: -> \n" + dataToSendToClient + "\nDATA FROM CLIENT: -> \n" + dataToSendToClient + "\nPORT: " + port + "\nCLOSE CONNECTION: " + closeConnection;

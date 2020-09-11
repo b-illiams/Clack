@@ -5,6 +5,12 @@ import data.FileCData;
 import data.MessageClackData;
 
 public class TestClackData {
+    /** Represents testing class for ClackData.
+     * @author Brian Williams
+     * @author Shamashad Abdulla
+     * @version 1.0
+     * @since 1.0
+     */
     public static void main(){
         ClackData messageClackData = new MessageClackData("bbno$", "hello", 0);
         ClackData m1 = messageClackData;
