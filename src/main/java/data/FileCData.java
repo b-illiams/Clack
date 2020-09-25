@@ -1,5 +1,8 @@
 package data;
 
+import java.io.*;
+import java.util.Scanner;
+
 /** Represents data point specifically for the files of the messaging system of Clack
  * @author Brian Williams
  * @author Shamashad Abdulla
@@ -33,7 +36,7 @@ public class FileCData extends ClackData {
      */
     public FileCData(){
         super();
-        fileName = "";
+        this.fileName = "";
         this.fileContent = "";
     }
 
@@ -43,6 +46,14 @@ public class FileCData extends ClackData {
     @Override
     public String getData() {
         return fileContent;
+    }
+
+    /**
+     *
+     * @return value of encrypted message
+     */
+    public String getData(String key) {
+        return decrypt(fileContent, key);
     }
 
     /**
@@ -63,18 +74,73 @@ public class FileCData extends ClackData {
 
     /**
      * reads content of a specified file.
-     * TODO: implementation
      */
-    public void readFileContents(){
+    public void readFileContents() throws IOException {
+        try{
+            File file = new File(fileName);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            fileContent = "";
+            while((line = br.readLine()) != null){
+                fileContent += line + "\n";
+            }
+            br.close();
+        }catch(FileNotFoundException e){
+            throw new IOException();
+        }catch(NullPointerException e){
+            throw new IOException();
+        }
+    }
 
+    /**
+     * reads content of a specified file. Encrypts the file Content.
+     */
+    public void readFileContents(String key) throws IOException {
+        try{
+            File file = new File(fileName);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            fileContent = "";
+            while((line = br.readLine()) != null){
+                fileContent += line + "\n";
+            }
+            br.close();
+        }catch(FileNotFoundException e){
+            throw new IOException();
+        }catch(NullPointerException e){
+            throw new IOException();
+        }
+        fileContent = encrypt(fileContent, key);
     }
 
     /**
      * writes content to specified file.
-     * TODO: implementation
      */
     public void writeFileContents(){
+        try{
+            File file = new File(fileName);
+            BufferedWriter br = new BufferedWriter(new FileWriter(file, false));
+            br.flush();
+            br.write(fileContent);
+            br.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * writes decrypted content to specified file.
+     */
+    public void writeFileContents(String key){
+        try{
+            File file = new File(fileName);
+            BufferedWriter br = new BufferedWriter(new FileWriter(file, false));
+            br.flush();
+            br.write(decrypt(fileContent, key));
+            br.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

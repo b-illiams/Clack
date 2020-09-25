@@ -1,6 +1,11 @@
 package main;
 
 import data.ClackData;
+import data.FileCData;
+import data.MessageClackData;
+
+import java.io.IOException;
+import java.util.Scanner;
 
 /** Represents a client for the messaging system of Clack.
  * @author Brian Williams
@@ -35,15 +40,29 @@ public class ClackClient {
     private ClackData dataToReceiveFromServer;
 
     /**
+     * Scanner that takes in input from the console.
+     */
+    private Scanner inFromStd;
+
+    /**
      * Constructor that takes in userName, hostName, and port. Sets closeConnection, dataToReceiveFromServer, and dataToSendToServer to default values.
      * @param userName String representing the username.
      * @param hostName String representing the host name.
      * @param port Integer representing the port.
      */
-    public ClackClient(String userName, String hostName, int port){
+    public ClackClient(String userName, String hostName, int port) throws IllegalArgumentException{
         this.userName = userName;
+        if(this.userName.equals(null)){
+            throw new IllegalArgumentException();
+        }
         this.hostName = hostName;
+        if(this.hostName.equals(null)){
+            throw new IllegalArgumentException();
+        }
         this.port = port;
+        if(port < 1024){
+            throw new IllegalArgumentException();
+        }
         this.closeConnection = false;
         this.dataToReceiveFromServer = null;
         this.dataToSendToServer = null;
@@ -55,9 +74,15 @@ public class ClackClient {
      * @param userName String representing the username.
      * @param hostName String representing the host name.
      */
-    public ClackClient(String userName, String hostName){
+    public ClackClient(String userName, String hostName) throws IllegalArgumentException{
         this.userName = userName;
+        if(this.userName.equals(null)){
+            throw new IllegalArgumentException();
+        }
         this.hostName = hostName;
+        if(this.hostName.equals(null)){
+            throw new IllegalArgumentException();
+        }
         this.port = 7000;
         this.closeConnection = false;
         this.dataToReceiveFromServer = null;
@@ -68,8 +93,11 @@ public class ClackClient {
      * Constructor that takes in userName. Sets hostName, port, closeConnection, dataToReceiveFromServer, and dataToSendToServer to default values.
      * @param userName String representing the username.
      */
-    public ClackClient(String userName){
+    public ClackClient(String userName) throws IllegalArgumentException{
         this.userName = userName;
+        if(this.userName.equals(null)){
+            throw new IllegalArgumentException();
+        }
         this.hostName = "";
         this.port = 7000;
         this.closeConnection = false;
@@ -85,7 +113,8 @@ public class ClackClient {
         this.userName = "";
         this.hostName = "";
         this.port = 7000;
-        this.closeConnection = false;this.dataToReceiveFromServer = null;
+        this.closeConnection = false;
+        this.dataToReceiveFromServer = null;
         this.dataToSendToServer = null;
 
     }
@@ -93,7 +122,17 @@ public class ClackClient {
     /**
      * TODO: implementation
      */
-    public void start(){}
+    public void start(){
+        inFromStd = new Scanner (System.in);
+        while(!closeConnection){
+            readClientData();
+            if(!closeConnection){
+                dataToReceiveFromServer = dataToSendToServer;
+                printData();
+            }
+        }
+        inFromStd.close();
+    }
 
     /**
      * sends data to the server
@@ -109,9 +148,40 @@ public class ClackClient {
 
     /**
      * prints data
-     * TODO: implementation
+     * TODO: robust implementation
      */
-    public void printData(){}
+    public void printData(){
+        System.out.println(dataToReceiveFromServer.getData());
+    }
+
+    /**
+     * reads client data from console.
+     */
+    public void readClientData(){
+        String contents = inFromStd.nextLine();
+        Scanner contentScan = new Scanner(contents);
+        if(contents.equals("DONE")){
+            System.out.println("1");
+             this.closeConnection = true;
+        }else if(contentScan.hasNext("SENDFILE")){
+            System.out.println("2");
+            contents = contents.substring("SENDFILE".length() + 1);
+            FileCData temp = new FileCData(userName, contents, new FileCData().CONSTANT_SENDFILE);
+            try {
+                temp.readFileContents();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+            dataToSendToServer = temp;
+
+        }else if(contents.equals("LISTUSERS")){
+            System.out.println("3");
+        }else{
+            System.out.println("4");
+            dataToSendToServer = new MessageClackData(userName, contents, new MessageClackData().CONSTANT_SENDMESSAGE);
+        }
+    }
+
 
     /**
      *

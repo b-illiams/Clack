@@ -90,4 +90,112 @@ public abstract class ClackData {
      * @return value specified by subclasses.
      */
     public abstract String getData();
+
+    /**
+     * @return value specified by subclasses.
+     * @param k decryption key
+     */
+    public abstract String getData(String k);
+
+    /**
+     * encrypts inputStringToEncrypt utilizing key
+     * @param inputStringToEncrypt
+     * @param key
+     * @return
+     */
+    protected String encrypt(String inputStringToEncrypt, String key){
+        key = key.toLowerCase();
+        String stringKey = "";
+        String result = "";
+        int keyIndex = 0;
+
+        for(int i = 0; i < inputStringToEncrypt.length(); i++) {
+            if(keyIndex == key.length()){
+                keyIndex = 0;
+            }
+
+            if(Character.isAlphabetic(inputStringToEncrypt.charAt(i))) {
+                stringKey += key.charAt(keyIndex);
+                keyIndex++;
+            }else{
+                stringKey += inputStringToEncrypt.charAt(i);
+            }
+
+            int shift = 0;
+            String shiftUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            String shiftLower = "abcdefghijklmnopqrstuvwxyz";
+
+            if(Character.isUpperCase(inputStringToEncrypt.charAt(i)) && Character.isAlphabetic(inputStringToEncrypt.charAt(i))){
+                int let1 = shiftUpper.indexOf(inputStringToEncrypt.charAt(i));
+                int let2 = shiftUpper.toUpperCase().indexOf(stringKey.toUpperCase().charAt(i));
+                shift = let1 + let2;
+                if(shift > 25)
+                    shift -= 26;
+                result += shiftUpper.charAt(shift);
+
+            }else if(Character.isLowerCase(inputStringToEncrypt.charAt(i)) && Character.isAlphabetic(inputStringToEncrypt.charAt(i))){
+                int let1 = shiftLower.indexOf(inputStringToEncrypt.charAt(i));
+                int let2 = shiftLower.toLowerCase().indexOf(stringKey.toLowerCase().charAt(i));
+                shift = let1 + let2;
+                if(shift > 25)
+                    shift -= 26;
+                result += shiftLower.charAt(shift);
+            }else {
+                result += inputStringToEncrypt.charAt(i);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * decrypts inputStringToEncrypt utilizing key
+     * @param inputStringToDecrypt
+     * @param key
+     * @return
+     */
+    protected String decrypt(String inputStringToDecrypt, String key){
+        key = key.toLowerCase();
+        String stringKey = "";
+        String result = "";
+        int keyIndex = 0;
+
+        for(int i = 0; i < inputStringToDecrypt.length(); i++) {
+            if(keyIndex == key.length()){
+                keyIndex = 0;
+            }
+
+            if(Character.isAlphabetic(inputStringToDecrypt.charAt(i))) {
+                stringKey += key.charAt(keyIndex);
+                keyIndex++;
+            }else{
+                stringKey += inputStringToDecrypt.charAt(i);
+            }
+
+            int shift = 0;
+            String shiftUpper = "ZYXWVUTSRQPONMLKJIHGFEDCBA";
+            String shiftLower = "zyxwvutsrqponmlkjihgfedcba";
+
+            if(Character.isUpperCase(inputStringToDecrypt.charAt(i)) && Character.isAlphabetic(inputStringToDecrypt.charAt(i))){
+                int let1 = shiftUpper.indexOf(inputStringToDecrypt.charAt(i));
+                int let2 = shiftUpper.toUpperCase().indexOf(stringKey.toUpperCase().charAt(i));
+                shift = let1 - let2 - 1;
+                if(shift < 0)
+                    shift += 26;
+                result += shiftUpper.charAt(shift);
+
+            }else if(Character.isLowerCase(inputStringToDecrypt.charAt(i)) && Character.isAlphabetic(inputStringToDecrypt.charAt(i))){
+                int let1 = shiftLower.indexOf(inputStringToDecrypt.charAt(i));
+                int let2 = shiftLower.toLowerCase().indexOf(stringKey.toLowerCase().charAt(i));
+                shift = let1 - let2 - 1;
+                if(shift < 0)
+                    shift += 26;
+                result += shiftLower.charAt(shift);
+            }else{
+                result += inputStringToDecrypt.charAt(i);
+            }
+        }
+        return result;
+    }
 }
+
+

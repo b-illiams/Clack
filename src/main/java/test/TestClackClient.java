@@ -21,6 +21,7 @@ public class TestClackClient {
         System.out.println(clackClient.equals(cc1));
         System.out.println(clackClient.equals(cc2));
         System.out.println(clackClient.toString());
+        clackClient.start();
 
 
 

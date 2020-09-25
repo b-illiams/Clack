@@ -1,5 +1,8 @@
 package data;
 
+import java.io.FileReader;
+import java.io.IOException;
+
 /** Represents data point for textual messages for the messaging system of Clack
  * @author Brian Williams
  * @author Shamashad Abdulla
@@ -12,6 +15,17 @@ public class MessageClackData extends ClackData  {
      */
     private String message;
 
+    /**
+     * Constructor that takes in userName, message, and type. Automatically encrypts message.
+     * @param userName String representing the Client user.
+     * @param message a String representing a message.
+     * @param type Integer representing the time the object was created.
+     * @param key String representing the encryption key
+     */
+    public MessageClackData(String userName, String message, int type, String key){
+        super(userName, type);
+        this.message = encrypt(message, key);
+    }
     /**
      * Constructor that takes in userName, message, and type.
      * @param userName String representing the Client user.
@@ -38,6 +52,14 @@ public class MessageClackData extends ClackData  {
     @Override
     public String getData() {
         return message;
+    }
+
+    /**
+     *
+     * @return value of encrypted message
+     */
+    public String getData(String key) {
+        return decrypt(message, key);
     }
 
     /**
