@@ -1,5 +1,6 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /** Represents data point for the messaging system of Clack
@@ -8,7 +9,7 @@ import java.util.Date;
  * @version 1.0
  * @since 1.0
  */
-public abstract class ClackData {
+public abstract class ClackData implements Serializable {
     /**
      *String representing the Client user.
      */

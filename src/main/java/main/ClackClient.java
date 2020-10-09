@@ -5,6 +5,11 @@ import data.FileCData;
 import data.MessageClackData;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /** Represents a client for the messaging system of Clack.
@@ -45,6 +50,16 @@ public class ClackClient {
     private Scanner inFromStd;
 
     /**
+     * ObjectInputStream object that receives data packets.
+     */
+    private ObjectInputStream inFromServer;
+
+    /**
+     * ObjectOutputStream object that sends data packets.
+     */
+    private ObjectOutputStream outToServer;
+
+    /**
      * Constructor that takes in userName, hostName, and port. Sets closeConnection, dataToReceiveFromServer, and dataToSendToServer to default values.
      * @param userName String representing the username.
      * @param hostName String representing the host name.
@@ -66,6 +81,8 @@ public class ClackClient {
         this.closeConnection = false;
         this.dataToReceiveFromServer = null;
         this.dataToSendToServer = null;
+        this.inFromServer = null;
+        this.outToServer = null;
 
     }
 
@@ -87,6 +104,8 @@ public class ClackClient {
         this.closeConnection = false;
         this.dataToReceiveFromServer = null;
         this.dataToSendToServer = null;
+        this.inFromServer = null;
+        this.outToServer = null;
     }
 
     /**
@@ -103,6 +122,8 @@ public class ClackClient {
         this.closeConnection = false;
         this.dataToReceiveFromServer = null;
         this.dataToSendToServer = null;
+        this.inFromServer = null;
+        this.outToServer = null;
 
     }
 
@@ -116,6 +137,8 @@ public class ClackClient {
         this.closeConnection = false;
         this.dataToReceiveFromServer = null;
         this.dataToSendToServer = null;
+        this.inFromServer = null;
+        this.outToServer = null;
 
     }
 
@@ -123,28 +146,58 @@ public class ClackClient {
      * TODO: implementation
      */
     public void start(){
-        inFromStd = new Scanner (System.in);
-        while(!closeConnection){
-            readClientData();
-            if(!closeConnection){
-                dataToReceiveFromServer = dataToSendToServer;
-                printData();
-            }
+
+        try{
+            Socket socket = new Socket(hostName, port);
+            inFromServer = new ObjectInputStream(socket.getInputStream());
+            outToServer = new ObjectOutputStream(socket.getOutputStream());
+            inFromStd = new Scanner (System.in);
+            while(!closeConnection){
+                readClientData();
+                if(!closeConnection){
+                    sendData();
+                    //dataToReceiveFromServer = dataToSendToServer;
+                    receiveData();
+                    printData();
+                }
         }
         inFromStd.close();
+        inFromServer.close();
+        outToServer.close();
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
     }
 
     /**
      * sends data to the server
      * TODO: implementation
      */
-    public void sendData(){}
+    public void sendData() throws IOException{
+        try{
+            outToServer.writeObject(dataToSendToServer);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+
+    }
 
     /**
      * receives data from the server
      * TODO: implementation
      */
-    public void receiveData(){}
+    public void receiveData(){
+        try {
+            dataToReceiveFromServer = (ClackData) inFromServer.readObject();
+        }catch(IOException e){
+            e.printStackTrace();
+        }catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
 
     /**
      * prints data
@@ -273,5 +326,27 @@ public class ClackClient {
     @Override
     public String toString() {
         return "\nUSERNAME: " + userName + "\nHOST NAME: " + hostName + "\nDATA TO CLIENT: -> \n" + dataToSendToServer + "\nDATA FROM SERVER: -> \n" + dataToReceiveFromServer + "\nPORT: " + port + "\nCLOSE CONNECTION: " + closeConnection;
+    }
+
+    public static void main (String[]args){
+        ClackClient client;
+        try{
+            if(args[0] != null){
+                client = new ClackClient(args[0]);
+            }else if (args[0] != null && args[0].contains("@")){
+                client = new ClackClient(args[0].substring(0, args[0].indexOf("@")), args[0].substring());
+            }else if (args[0] != null && args[0].contains("@") && args[0].contains(":")){
+                client = new ClackClient(args[0].substring(0, args[0].indexOf("@")));
+            }else{
+                client = new ClackClient();
+            }
+            client.start();
+        }catch(InputMismatchException e){
+            e.printStackTrace();
+        }catch(ArrayIndexOutOfBoundsException e){
+            client = new ClackClient();
+            client.start();
+        }
+
     }
 }
