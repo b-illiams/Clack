@@ -1,10 +1,13 @@
 package main;
 
+import data.ClackData;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 /** Represents a server for the messaging system of Clack.
@@ -22,24 +25,12 @@ public class ClackServer {
      * boolean representing the connection status.
      */
     private boolean closeConnection;
-    /**
-     * ClackData representing data sent to client.
-     */
-    private data.ClackData dataToSendToClient;
-    /**
-     * ClackData representing data sent from client.
-     */
-    private data.ClackData dataToReceiveFromClient;
 
     /**
-     * ObjectInputStream object that receives data packets.
+     * serverSideClientIO List that represents the server interactions for the clients
      */
-    private ObjectInputStream inFromClient;
 
-    /**
-     * ObjectOutputStream object that sends data packets.
-     */
-    private ObjectOutputStream outToClient;
+    private ArrayList <ServerSideClientIO> serverSideClientIOList;
 
     /**
      * Constructor that takes in the port.
@@ -47,11 +38,10 @@ public class ClackServer {
      */
     public ClackServer(int port) throws IllegalArgumentException{
         this.closeConnection = false;
-        this.inFromClient = null;
-        this.outToClient =  null;
         if(port < 1024)
             throw new IllegalArgumentException();
         this.port =  port;
+        serverSideClientIOList = new ArrayList<ServerSideClientIO>();
     }
 
     /**
@@ -59,9 +49,8 @@ public class ClackServer {
      */
     public ClackServer(){
         this.closeConnection = false;
-        this.inFromClient = null;
-        this.outToClient =  null;
         this.port = 7000;
+        serverSideClientIOList = new ArrayList<ServerSideClientIO>();
     }
 
     /**
@@ -70,61 +59,31 @@ public class ClackServer {
     public void start(){
         try {
             ServerSocket serverSocket = new ServerSocket(port);
-            Socket clientSocket = serverSocket.accept();
-            inFromClient = new ObjectInputStream(clientSocket.getInputStream());
-            outToClient = new ObjectOutputStream(clientSocket.getOutputStream());
+
             while(!closeConnection) {
                 if (!closeConnection) {
-                    receiveData();
-                    printData();
-                    dataToSendToClient = dataToReceiveFromClient;
-                    sendData();
+                    ServerSideClientIO servSide = new ServerSideClientIO(this, serverSocket.accept());
+                    serverSideClientIOList.add(servSide);
+
+                    Thread thread = new Thread(servSide);
+                    thread.start();
                 }
             }
-            clientSocket.close();
-            inFromClient.close();
-            outToClient.close();
+            serverSocket.close();
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    /**
-     * sends data to the client
-     * TODO: implementation
-     */
-    public void sendData(){
-        try{
-            outToClient.writeObject(dataToSendToClient);
-        }catch(IOException e){
-            e.printStackTrace();
+    public synchronized void broadcast (ClackData dataToBroadcastToClients){
+        for(ServerSideClientIO x : serverSideClientIOList){
+            x.sendData();
         }
     }
 
-    /**
-     * receives data from the client
-     * TODO: implementation
-     */
-    public void receiveData(){
-        if(!closeConnection){
-            try{
-                dataToReceiveFromClient =  (data.ClackData) inFromClient.readObject();
-            }catch(ClassNotFoundException e){
-                e.printStackTrace();
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-        }
+    public synchronized void remove (ServerSideClientIO serverSideClientToRemove){
+        serverSideClientIOList.remove(serverSideClientToRemove);
     }
-
-    /**
-     * prints data
-     * TODO: implementation
-     */
-    public void printData(){
-        System.out.println(dataToReceiveFromClient.getData());
-    }
-
 
     /**
      * @return value of port.
@@ -141,10 +100,10 @@ public class ClackServer {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        if(dataToSendToClient != null)
-            result = prime * result + (dataToSendToClient.hashCode());
-        if(dataToReceiveFromClient != null)
-            result = prime * result + (dataToReceiveFromClient.hashCode());
+        //if(dataToSendToClient != null)
+            //result = prime * result + (dataToSendToClient.hashCode());
+        //if(dataToReceiveFromClient != null)
+            //result = prime * result + (dataToReceiveFromClient.hashCode());
         result = prime * result + (port);
         result = prime * result + (closeConnection ? 1 : 0);
         return result;
@@ -167,7 +126,7 @@ public class ClackServer {
             boolean b1 = false;
             boolean b2 = false;
 
-            if(dataToReceiveFromClient != null && o.dataToReceiveFromClient != null){
+           /* if(dataToReceiveFromClient != null && o.dataToReceiveFromClient != null){
                 if(this.dataToReceiveFromClient.equals(o.dataToReceiveFromClient) ){
                     b1 = true;
                 }
@@ -182,6 +141,8 @@ public class ClackServer {
             } else if(dataToSendToClient == null && o.dataToSendToClient == null){
                 b2 = true;
             }
+
+            */
             return b1 &&
                     b2 &&
                     this.port == o.port &&
@@ -194,7 +155,7 @@ public class ClackServer {
      */
     @Override
     public String toString() {
-        return "\nDATA TO CLIENT: -> \n" + dataToSendToClient + "\nDATA FROM CLIENT: -> \n" + dataToSendToClient + "\nPORT: " + port + "\nCLOSE CONNECTION: " + closeConnection;
+        return /*"\nDATA TO CLIENT: -> \n" + dataToSendToClient + "\nDATA FROM CLIENT: -> \n" + dataToSendToClient + */ "\nPORT: " + port + "\nCLOSE CONNECTION: " + closeConnection;
     }
 
     public static void main (String[]args){

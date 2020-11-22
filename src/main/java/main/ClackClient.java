@@ -152,18 +152,19 @@ public class ClackClient {
             inFromServer = new ObjectInputStream(socket.getInputStream());
             outToServer = new ObjectOutputStream(socket.getOutputStream());
             inFromStd = new Scanner (System.in);
-            while(!closeConnection){
+            Runnable thread = new ClientSideServerListener(this);
+            while(!closeConnection) {
+                thread.run();
                 readClientData();
-                if(!closeConnection){
+                if (!closeConnection) {
                     sendData();
-                    //dataToReceiveFromServer = dataToSendToServer;
-                    receiveData();
-                    printData();
                 }
-        }
-        inFromStd.close();
-        inFromServer.close();
-        outToServer.close();
+            }
+
+            inFromStd.close();
+            inFromServer.close();
+            outToServer.close();
+            closeConnection = true;
 
         }catch(IOException e){
             e.printStackTrace();
@@ -175,11 +176,11 @@ public class ClackClient {
      * sends data to the server
      * TODO: implementation
      */
-    public void sendData() throws IOException{
+    public void sendData(){
         try{
             outToServer.writeObject(dataToSendToServer);
         }catch(IOException e){
-            e.printStackTrace();
+           e.printStackTrace();
         }
 
 
@@ -229,12 +230,20 @@ public class ClackClient {
 
         }else if(contents.equals("LISTUSERS")){
             System.out.println("3");
+            dataToSendToServer = new MessageClackData(userName, "", new MessageClackData().CONSTANT_LISTUSERS);
         }else{
             System.out.println("4");
             dataToSendToServer = new MessageClackData(userName, contents, new MessageClackData().CONSTANT_SENDMESSAGE);
         }
     }
 
+    /**
+     *
+     * @return value of closeConnection.
+     */
+    public boolean isCloseConnection() {
+        return closeConnection;
+    }
 
     /**
      *
@@ -334,7 +343,7 @@ public class ClackClient {
             if(args[0] != null){
                 client = new ClackClient(args[0]);
             }else if (args[0] != null && args[0].contains("@")){
-                client = new ClackClient(args[0].substring(0, args[0].indexOf("@")), args[0].substring());
+                client = new ClackClient(args[0].substring(0, args[0].indexOf("@")), args[0].substring(args[0].indexOf("@")));
             }else if (args[0] != null && args[0].contains("@") && args[0].contains(":")){
                 client = new ClackClient(args[0].substring(0, args[0].indexOf("@")));
             }else{
@@ -344,8 +353,7 @@ public class ClackClient {
         }catch(InputMismatchException e){
             e.printStackTrace();
         }catch(ArrayIndexOutOfBoundsException e){
-            client = new ClackClient();
-            client.start();
+
         }
 
     }
